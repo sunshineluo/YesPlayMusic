@@ -688,11 +688,9 @@
       </div>
 
       <div class="footer">
-        <p class="author"
-          >MADE BY
-          <a href="#" target="_blank">Sunshineluo</a></p
-        >
-        <p class="version">v{{ version }}</p>
+        <p class="author">
+        MADE BY
+          <a href="#" target="_blank">Sunshineluo</a></p>
       </div>
     </div>
   </div>
