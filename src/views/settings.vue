@@ -690,7 +690,7 @@
       <div class="footer">
         <p class="author"
           >MADE BY
-          <a href="#" target="_blank">Sunshineluo</a></p
+          <a href="http://github.com/qier222" target="_blank">QIER222</a></p
         >
         <p class="version">v{{ version }}</p>
 
