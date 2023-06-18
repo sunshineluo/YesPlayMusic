@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:match*",
-      "destination": "https://autumnfish.cn/:match*"
+      "destination": "https://www.luoyangapi.top/:match*"
     }
   ]
 }
