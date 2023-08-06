@@ -65,7 +65,6 @@
         <svg-icon icon-class="logout" />
         {{ $t('library.userProfileMenu.logout') }}
       </div>
-      <hr />
     </ContextMenu>
   </div>
 </template>
