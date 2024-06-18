@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:match*",
-      "destination": "https://lianghj.top:3000/:match*"
+      "destination": "https://api.2leo.top/:match*"
     }
   ]
 }
