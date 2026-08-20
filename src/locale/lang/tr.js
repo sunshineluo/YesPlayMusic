@@ -164,6 +164,19 @@ export default {
       light: 'Aydınlık',
       dark: 'Karanlık',
     },
+    themeColor: {
+      text: 'Tema rengi',
+      default: 'Orijinal',
+      sunset: 'Gün batımı geçişi',
+      ocean: 'Okyanus geçişi',
+      forest: 'Orman geçişi',
+    },
+    trayIcon: {
+      text: 'Tepsi Simgesi Rengi',
+      auto: 'Otomatik',
+      light: 'Aydınlık',
+      dark: 'Karanlık',
+    },
     automaticallyCacheSongs: 'Müzikleri otomatik çerezle',
     clearSongsCache: 'Müzik çerezlerini temizle',
     cacheCount: 'Çerezlenen {song} Müzikler ({size})',
@@ -230,6 +243,8 @@ export default {
     minePlaylists: 'My Playlists',
     likedPlaylists: 'Liked Playlists',
     cardiacMode: 'Cardiac Mode',
+    copyLyric: 'Copy Lyric',
+    copyLyricWithTranslation: 'Copy Lyric With Translation',
   },
   toast: {
     savedToMyLikedSongs: 'Beğendiğim Müziklere Kaydet',

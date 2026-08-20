@@ -1,5 +1,5 @@
 <template>
-  <div class="player" @click="toggleLyrics">
+  <div class="player" @click="handleClick" @mousedown="handleMouseDown">
     <div
       class="progress-bar"
       :class="{
@@ -195,6 +195,11 @@ export default {
     ButtonIcon,
     VueSlider,
   },
+  data() {
+    return {
+      mouseDownTarget: null,
+    };
+  },
   computed: {
     ...mapState(['player', 'settings', 'data']),
     currentTrack() {
@@ -217,9 +222,24 @@ export default {
         : '';
     },
   },
+  mounted() {
+    this.setupMediaControls();
+    window.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeydown);
+  },
   methods: {
     ...mapMutations(['toggleLyrics']),
     ...mapActions(['showToast', 'likeATrack']),
+    handleClick(event) {
+      if (event.target == this.mouseDownTarget) {
+        this.toggleLyrics();
+      }
+    },
+    handleMouseDown(event) {
+      this.mouseDownTarget = event.target;
+    },
     playPrevTrack() {
       this.player.playPrevTrack();
     },
@@ -269,6 +289,39 @@ export default {
     },
     mute() {
       this.player.mute();
+    },
+
+    setupMediaControls() {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', () => {
+          this.playOrPause();
+        });
+        navigator.mediaSession.setActionHandler('pause', () => {
+          this.playOrPause();
+        });
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+          this.playPrevTrack();
+        });
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+          this.playNextTrack();
+        });
+      }
+    },
+
+    handleKeydown(event) {
+      switch (event.code) {
+        case 'MediaPlayPause':
+          this.playOrPause();
+          break;
+        case 'MediaTrackPrevious':
+          this.playPrevTrack();
+          break;
+        case 'MediaTrackNext':
+          this.playNextTrack();
+          break;
+        default:
+          break;
+      }
     },
   },
 };

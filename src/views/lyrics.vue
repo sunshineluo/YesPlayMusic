@@ -248,7 +248,11 @@
               @dblclick="clickLyricLine(line.time, true)"
             >
               <div class="content">
-                <span v-if="line.contents[0]">{{ line.contents[0] }}</span>
+                <span
+                  v-if="line.contents[0]"
+                  @click.right="openLyricMenu($event, line, 0)"
+                  >{{ line.contents[0] }}</span
+                >
                 <br />
                 <span
                   v-if="
@@ -256,10 +260,26 @@
                     $store.state.settings.showLyricsTranslation
                   "
                   class="translation"
+                  @click.right="openLyricMenu($event, line, 1)"
                   >{{ line.contents[1] }}</span
                 >
               </div>
             </div>
+            <ContextMenu v-if="!noLyric" ref="lyricMenu">
+              <div class="item" @click="copyLyric(false)">{{
+                $t('contextMenu.copyLyric')
+              }}</div>
+              <div
+                v-if="
+                  rightClickLyric &&
+                  rightClickLyric.contents[1] &&
+                  $store.state.settings.showLyricsTranslation
+                "
+                class="item"
+                @click="copyLyric(true)"
+                >{{ $t('contextMenu.copyLyricWithTranslation') }}</div
+              >
+            </ContextMenu>
           </div>
         </transition>
       </div>
@@ -284,9 +304,10 @@
 
 import { mapState, mapMutations, mapActions } from 'vuex';
 import VueSlider from 'vue-slider-component';
+import ContextMenu from '@/components/ContextMenu.vue';
 import { formatTrackTime } from '@/utils/common';
-import { getLyric } from '@/api/track';
-import { lyricParser } from '@/utils/lyrics';
+import { getLyric, getCloudLyric } from '@/api/track';
+import { lyricParser, copyLyric, parseLyric } from '@/utils/lyrics';
 import ButtonIcon from '@/components/ButtonIcon.vue';
 import * as Vibrant from 'node-vibrant/dist/vibrant.worker.min.js';
 import Color from 'color';
@@ -299,6 +320,7 @@ export default {
   components: {
     VueSlider,
     ButtonIcon,
+    ContextMenu,
   },
   data() {
     return {
@@ -312,6 +334,7 @@ export default {
       background: '',
       date: this.formatTime(new Date()),
       isFullscreen: !!document.fullscreenElement,
+      rightClickLyric: null,
     };
   },
   computed: {
@@ -521,6 +544,23 @@ export default {
     },
     getLyric() {
       if (!this.currentTrack.id) return;
+      if (
+        this.currentTrack.pc !== null &&
+        this.currentTrack.cd === null &&
+        this.$store.state.data.user?.userId
+      ) {
+        //云盘未设置关联的歌曲获取其内置歌词
+        return getCloudLyric(
+          this.currentTrack.id,
+          this.$store.state.data.user?.userId
+        ).then(data => {
+          this.tlyric = [];
+          this.romalyric = [];
+          this.lyric = data?.lrc?.length > 0 ? parseLyric(data.lrc) : [];
+          this.lyricType = 'translation';
+          return true;
+        });
+      }
       return getLyric(this.currentTrack.id).then(data => {
         if (!data?.lrc?.lyric) {
           this.lyric = [];
@@ -585,6 +625,21 @@ export default {
       }
       if (startPlay === true) {
         this.player.play();
+      }
+    },
+    openLyricMenu(e, lyric, idx) {
+      this.rightClickLyric = { ...lyric, idx };
+      this.$refs.lyricMenu.openMenu(e);
+      e.preventDefault();
+    },
+    copyLyric(withTranslation) {
+      if (this.rightClickLyric) {
+        const idx = this.rightClickLyric.idx;
+        if (!withTranslation) {
+          copyLyric(this.rightClickLyric.contents[idx]);
+        } else {
+          copyLyric(this.rightClickLyric.contents.join(' '));
+        }
       }
     },
     setLyricsInterval() {
@@ -670,6 +725,7 @@ export default {
   position: absolute;
   height: 100vh;
   width: 100vw;
+
   .top-right,
   .bottom-left {
     z-index: 0;
@@ -702,6 +758,7 @@ export default {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -776,6 +833,7 @@ export default {
           margin: 0 10px;
           display: flex;
           align-items: center;
+
           .volume-bar {
             width: 84px;
           }
@@ -857,6 +915,7 @@ export default {
           width: 22px;
         }
       }
+
       .lyric-switch-icon {
         color: var(--color-text);
         font-size: 14px;
@@ -926,6 +985,7 @@ export default {
         transform-origin: center left;
         transform: scale(0.95);
         transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        user-select: none;
 
         span {
           opacity: 0.28;
@@ -951,6 +1011,7 @@ export default {
 
     .highlight div.content {
       transform: scale(1);
+
       span {
         opacity: 0.98;
         display: inline-block;
@@ -1015,6 +1076,7 @@ export default {
   .left-side {
     display: none;
   }
+
   .right-side .lyrics-container {
     max-width: 100%;
   }
@@ -1031,7 +1093,10 @@ export default {
   transition: all 0.4s;
 }
 
-.slide-up-enter, .slide-up-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.slide-up-enter,
+.slide-up-leave-to
+
+/* .fade-leave-active below version 2.1.8 */ {
   transform: translateY(100%);
 }
 

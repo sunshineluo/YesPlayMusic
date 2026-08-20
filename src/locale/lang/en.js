@@ -169,6 +169,19 @@ export default {
       light: 'Light',
       dark: 'Dark',
     },
+    themeColor: {
+      text: 'Theme Color',
+      default: 'Original',
+      sunset: 'Sunset Gradient',
+      ocean: 'Ocean Gradient',
+      forest: 'Forest Gradient',
+    },
+    trayIcon: {
+      text: 'Tray Icon Color',
+      auto: 'Auto',
+      light: 'Light',
+      dark: 'Dark',
+    },
     automaticallyCacheSongs: 'Automatically cache songs',
     clearSongsCache: 'Clear Songs Cache',
     cacheCount: 'Cached {song} songs ({size})',
@@ -244,6 +257,8 @@ export default {
     minePlaylists: 'My Playlists',
     likedPlaylists: 'Liked Playlists',
     cardiacMode: 'Cardiac Mode',
+    copyLyric: 'Copy Lyric',
+    copyLyricWithTranslation: 'Copy Lyric With Translation',
   },
   toast: {
     savedToPlaylist: 'Saved to playlist',

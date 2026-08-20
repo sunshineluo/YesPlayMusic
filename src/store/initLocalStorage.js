@@ -12,6 +12,7 @@ let localStorage = {
     lang: null,
     musicLanguage: 'all',
     appearance: 'auto',
+    themeColor: 'default',
     musicQuality: 320000,
     lyricFontSize: 28,
     outputDevice: 'default',
@@ -30,12 +31,15 @@ let localStorage = {
     showLibraryDefault: false,
     subTitleDefault: false,
     linuxEnableCustomTitlebar: false,
+    trayIconTheme: 'auto',
     enabledPlaylistCategories,
     proxyConfig: {
       protocol: 'noProxy',
       server: '',
       port: null,
     },
+    enableRealIP: false,
+    realIP: null,
     shortcuts: shortcuts,
   },
   data: {
